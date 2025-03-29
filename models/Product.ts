@@ -1,4 +1,4 @@
-import mongoose, { Schema, model, models, Document, Model } from "mongoose";
+import mongoose, { Schema, model, models } from "mongoose";
 
 export const IMAGE_VARIANTS = {
   SQUARE: {
@@ -15,7 +15,7 @@ export const IMAGE_VARIANTS = {
   },
   PORTRAIT: {
     type: "PORTRAIT",
-    dimensions: { width: 1080, height: 1400 },
+    dimensions: { width: 1080, height: 1440 },
     label: "Portrait (3:4)",
     aspectRatio: "3:4",
   },
@@ -23,23 +23,21 @@ export const IMAGE_VARIANTS = {
 
 export type IImageVariantType = keyof typeof IMAGE_VARIANTS;
 
-export interface IImageVariant {
+export interface ImageVariant {
   type: IImageVariantType;
   price: number;
   license: "personal" | "commercial";
 }
 
-export interface IProduct extends Document {
-  _id: mongoose.Types.ObjectId;
+export interface IProduct {
+  _id?: mongoose.Types.ObjectId;
   name: string;
   description: string;
   imageUrl: string;
-  variants: IImageVariant[];
-  createdAt: Date;
-  updatedAt: Date;
+  variants: ImageVariant[];
 }
 
-const imageVariantSchema = new Schema<IImageVariant>({
+const imageVariantSchema = new Schema<ImageVariant>({
   type: {
     type: String,
     required: true,
@@ -67,7 +65,6 @@ const productSchema = new Schema<IProduct>(
   { timestamps: true }
 );
 
-const Product: Model<IProduct> =
-  models.Product || model<IProduct>("Product", productSchema);
+const Product = models?.Product || model<IProduct>("Product", productSchema);
 
 export default Product;
